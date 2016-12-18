@@ -1,17 +1,19 @@
 package entities;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity(name = "public.\"Category\"")
-public class Category {
+public class Category implements IEntity {
     private int id;
     private String name;
 
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "retailerRaw_seq")
+    @SequenceGenerator(name = "retailerRaw_seq",
+            sequenceName = "public.\"Category_id_seq\"")
     public int getId() {
         return id;
     }
@@ -48,5 +50,16 @@ public class Category {
         int result = id;
         result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
+    }
+
+    private List<Entry> entries;
+
+    @OneToMany(mappedBy = "category")
+    public List<Entry> getEntries() {
+        return entries;
+    }
+
+    public void setEntries(List<Entry> entries) {
+        this.entries = entries;
     }
 }

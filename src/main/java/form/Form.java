@@ -6,7 +6,12 @@ package form;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
 import javax.swing.*;
+
+import dao.HibernateUtil;
+import entities.Category;
+import entities.Entry;
 import info.clearthought.layout.*;
 
 /**
@@ -20,6 +25,10 @@ public class Form extends JFrame {
         form.setVisible(true);
     }
 
+    Object[] headerEntry = new Object[]{"№","Category","Type","Description"};
+    Command command = Command.DEFULT;
+    List<Entry> entriesInTable;
+
     public Form() {
         initComponents();
     }
@@ -27,35 +36,145 @@ public class Form extends JFrame {
     private void buttonAddActionPerformed(ActionEvent e) {
         // TODO add your code here
         frame1.setVisible(true);
+        command = Command.ADD;
     }
 
     private void buttonDeleteActionPerformed(ActionEvent e) {
         // TODO add your code here
+        command = Command.DELETE;
+        int row = table1.getSelectedRow();
+        if(row>=0){
+            HibernateUtil.getEntryDao().delete(entriesInTable.get(row));
+        }
+        entriesInTable = refresh();
     }
 
     private void buttonUpdateActionPerformed(ActionEvent e) {
         // TODO add your code here
+        frame1.setVisible(true);
+        command = Command.UPDATE;
     }
 
     private void buttonSearchActionPerformed(ActionEvent e) {
         // TODO add your code here
+        frame1.setVisible(true);
+        command = Command.SEARCH;
     }
 
     private void buttonSubmitActionPerformed(ActionEvent e) {
         // TODO add your code here
         frame1.setVisible(false);
+
+        Category category = new Category();
+        entities.Type type = new entities.Type();
+        Entry entry = new Entry();
+        switch (command){
+            case ADD:
+
+                category.setName(getTextFieldCategory().getText());
+
+                type.setName(getTextFieldType().getText());
+
+                entry.setCategory(category);
+                entry.setType(type);
+                entry.setDescription(getTextFieldDescription().getText());
+
+                HibernateUtil.getEntryDao().insert(entry);
+                entriesInTable = refresh();
+                break;
+            case SEARCH:
+                List<Entry> list = HibernateUtil.getEntryDao().getAll();
+                String typeStr = getTextFieldType().getText();
+                String categoryStr = getTextFieldCategory().getText();
+                String description = getTextFieldDescription().getText();
+
+                for (Entry entr:list
+                     ) {
+                    if(!(entr.getType().getName().contains(typeStr)&&entr.getCategory().getName().contains(categoryStr)&&entr.getDescription().contains(description)))
+                    {
+                        list.remove(entr);
+                    }
+                }
+                entriesInTable=refresh(list);
+                break;
+            case UPDATE:
+                int row = table1.getSelectedRow();
+                if(row>=0){
+                    entry = entriesInTable.get(row);
+
+                    category.setName(getTextFieldCategory().getText());
+
+                    type.setName(getTextFieldType().getText());
+
+                    entry.setCategory(category);
+                    entry.setType(type);
+                    entry.setDescription(getTextFieldDescription().getText());
+
+                    HibernateUtil.getEntryDao().update(entry);
+                    entriesInTable = refresh();
+                }
+                break;
+
+        }
+    }
+    private List refresh() {
+        java.util.List listEntries = refresh(HibernateUtil.getEntryDao().getAll());
+
+        return listEntries;
+    }
+    private List refresh(List<Entry> list) {
+        java.util.List listEntries = list;
+        Object[][] rows = new Object[listEntries.size()][4];
+        for (int i = 0; i < listEntries.size(); i++) {
+            Entry entry = (Entry) listEntries.get(i);
+            rows[i] = new Object[]{i+1, entry.getCategory().getName(), entry.getType().getName(), entry.getDescription()};
+        }
+
+        table1 = new JTable(rows, headerEntry);
+        scrollPane1.setViewportView(table1);
+        return listEntries;
+    }
+
+    public JTextField getTextFieldCategory() {
+        return textField1;
+    }
+
+    public JTextField getTextFieldType() {
+        return textField2;
+    }
+
+    public JTextField getTextFieldDescription() {
+        return textField3;
+    }
+
+    public JTextField getTextField1() {
+        return textField1;
+    }
+
+    public JTextField getTextField2() {
+        return textField2;
+    }
+
+    public JTextField getTextField3() {
+        return textField3;
+    }
+
+    private void buttonRefreshActionPerformed(ActionEvent e) {
+        // TODO add your code here
+        refresh();
     }
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - Vadim Lygin
         scrollPane1 = new JScrollPane();
-        table1 = new JTable(new Object[][]{},new Object[]{"Category","Type","Description"});
+        table1 = new JTable();
         toolBar1 = new JToolBar();
         button1 = new JButton();
         button2 = new JButton();
         button3 = new JButton();
         button4 = new JButton();
+        button6 = new JButton();
         frame1 = new JFrame();
         button5 = new JButton();
         panel1 = new JPanel();
@@ -118,6 +237,16 @@ public class Form extends JFrame {
                 }
             });
             toolBar1.add(button4);
+
+            //---- button6 ----
+            button6.setText("Refresh");
+            button6.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    buttonRefreshActionPerformed(e);
+                }
+            });
+            toolBar1.add(button6);
         }
         contentPane.add(toolBar1, BorderLayout.SOUTH);
         pack();
@@ -184,7 +313,7 @@ public class Form extends JFrame {
         }
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
 
-
+       entriesInTable= refresh();
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
@@ -196,6 +325,7 @@ public class Form extends JFrame {
     private JButton button2;
     private JButton button3;
     private JButton button4;
+    private JButton button6;
     private JFrame frame1;
     private JButton button5;
     private JPanel panel1;

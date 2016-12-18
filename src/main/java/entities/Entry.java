@@ -3,13 +3,18 @@ package entities;
 import javax.persistence.*;
 
 @Entity(name = "public.\"Entry\"")
-public class Entry {
+public class Entry implements IEntity {
     private int id;
     private String description;
 
     @Id
     @Column(name = "id", nullable = false)
-    public int getId() {
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "retailerRaw_seq1")
+    @SequenceGenerator(name = "retailerRaw_seq1",
+            sequenceName = "public.\"Entry_id_seq\"")
+   public int getId() {
+
         return id;
     }
 
@@ -49,7 +54,7 @@ public class Entry {
 
     private Category category;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "category_id")
     public Category getCategory() {
         return category;
@@ -61,7 +66,7 @@ public class Entry {
 
     private Type type;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "type_id")
     public Type getType() {
         return type;

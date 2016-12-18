@@ -1,17 +1,18 @@
 package entities;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity(name = "public.\"Type\"")
-public class Type {
+public class Type implements IEntity {
     private int id;
     private String name;
 
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "retailerRaw_seq2")
+    @SequenceGenerator(name = "retailerRaw_seq2",
+            sequenceName = "public.\"Type_id_seq\"")
     public int getId() {
         return id;
     }

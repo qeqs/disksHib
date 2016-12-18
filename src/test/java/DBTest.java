@@ -11,22 +11,22 @@ import java.util.List;
 public class DBTest {
     @Test
     public void test(){
-//        Category category = new Category();
-//        category.setName("categ");
-//        Type type = new Type();
-//        type.setName("type");
-//
-//        Entry entry = new Entry();
-//        entry.setDescription("none");
-//        entry.setType(type);
-//        entry.setCategory(category);
+        Category category = new Category();
+        category.setName("categ");
+        Type type = new Type();
+        type.setName("type");
+
+        Entry entry = new Entry();
+        entry.setDescription("none");
+        entry.setType(type);
+        entry.setCategory(category);
 
        Session session = HibernateUtil.getSessionFactory().openSession();
-//        session.beginTransaction();
-//        session.save(category);
-//        session.save(type);
-//        session.save(entry);
-//        session.getTransaction().commit();
+        session.beginTransaction();
+        session.save(category);
+        session.save(type);
+        session.save(entry);
+        session.getTransaction().commit();
 
         List entities = new ArrayList<>();
         try {

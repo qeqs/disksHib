@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "5.2.5.1.342" Java: "1.8.0_112-release" encoding: "UTF-8"
+JFDML JFormDesigner: "5.2.5.1.342" Java: "1.8.0_112" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -35,6 +35,11 @@ new FormModel {
 					"text": "Search"
 					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "buttonSearchActionPerformed", true ) )
 				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "button6"
+					"text": "Refresh"
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "buttonRefreshActionPerformed", true ) )
+				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "South"
 			} )
@@ -61,6 +66,9 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JTextField" ) {
 					name: "textField1"
 					"columns": 10
+					auxiliary() {
+						"JavaCodeGenerator.variableGetter": true
+					}
 				}, new FormLayoutConstraints( class com.jformdesigner.runtime.TableConstraints ) )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "label1"
@@ -71,6 +79,9 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JTextField" ) {
 					name: "textField2"
 					"columns": 10
+					auxiliary() {
+						"JavaCodeGenerator.variableGetter": true
+					}
 				}, new FormLayoutConstraints( class com.jformdesigner.runtime.TableConstraints ) {
 					"gridY": 1
 				} )
@@ -84,6 +95,9 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JTextField" ) {
 					name: "textField3"
 					"columns": 10
+					auxiliary() {
+						"JavaCodeGenerator.variableGetter": true
+					}
 				}, new FormLayoutConstraints( class com.jformdesigner.runtime.TableConstraints ) {
 					"gridY": 2
 				} )
